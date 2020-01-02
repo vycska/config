@@ -49,7 +49,7 @@ set matchpairs+=<:> "characters that form pairs; the % command jumps from one to
 set startofline "various commands (CTRL-D, G, H, gg, ...) move the cursor to the first non-blank of the line
 
 set title "the title of the window will be set
-set statusline=%2*%3n%0*\ %f\ %y%q\ %([%M%R%H%W]%)%20(%l/%L,%c%V%)%=%p%% "content of the status line
+set statusline=%3n\ %{mode()}\ %f\ [%{&fileencoding},%{&fileformat}]\ %y%q\ %([%M%R%H%W]%)%20(%l/%L,%c%V%)%=%p%%\  "content of the status line
 set report=0 "threshold for reporting number of lines changed
 set showmode "if in Insert, Replace or Visual mode put a message on the last line
 set more "listings pause when the whole screen is filled
@@ -97,11 +97,12 @@ filetype indent on "enable loading the indent file for specifi file types
 syntax enable "switch on syntax highlighting (will keep your current color settings)
 
 highlight CursorLine cterm=bold ctermbg=darkblue
-highlight StatusLine ctermfg=red
+highlight StatusLine cterm=bold ctermfg=red
 highlight User1 ctermbg=red ctermfg=black
 highlight User2 ctermbg=darkblue ctermfg=white
 
 autocmd FileType vim :set nowrap
+autocmd FileType c :unlet! c_comment_strings
 
 inoreabbrev \i \begin{itemize}<CR>\itemsep 0pt<CR>\item<CR>\end{itemize}<Up>
 
@@ -112,6 +113,7 @@ nmap <F5> :cp<CR>
 nmap <F6> :cn<CR>
 nmap <F12> :vnew<CR>
 nnoremap <C-L> :nohlsearch<CR><C-L>
+noremap <C-K> :pyf /usr/share/clang/clang-format.py<CR>
 
 if filereadable("cscope.out")
     set cscopeprg=/usr/bin/cscope "specify the command to execute cscope
@@ -121,7 +123,7 @@ if filereadable("cscope.out")
     set nocscoperelative "do not use the basename of cscope.out location as the prefix to construct an absolute path
     set nocscopetag "do not use :cstag instead of the default :tag behaviour
     set cscopetagorder=0 "determine the order in which :cstag performs a search -- cscope is searched first
-    set cscopepathcomp=3 "determine how many components of a file's path to display
+    set cscopepathcomp=5 "determine how many components of a file's path to display
     set cscopequickfix=s0,g0,d0,c0,t0,e0,f0,i0,a0 "specify whether to use quickfix window to show cscope results
     " 's' symbol, g' global, 'd' called, 'c' calls, 't' text, 'e' egrep, 'f' file, 'i' includes, 'a' assignments
     nmap <C-\>s :cscope find s <C-R>=expand("<cword>")<CR><CR>
@@ -134,8 +136,3 @@ if filereadable("cscope.out")
     nmap <C-\>i :cscope find i <C-R>=expand("<cfile>")<CR><CR>
     nmap <C-\>a :cscope find a <C-R>=expand("<cword>")<CR><CR>
 endif
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-
-unlet! c_comment_strings
