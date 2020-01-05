@@ -2,18 +2,23 @@ set nocompatible "do not make Vim to be more Vi-compatible, make Vim to behave i
 
 set path=.,,**,/usr/arm-none-eabi/include,/usr/lib/gcc/arm-none-eabi/9.2.0/include "this is a list of directories which will be searched when using various commands
 set wildmode=list:full "completion mode that is used for the character specified with 'wildchar'
-set wildchar=<Tab> "character you have to type to start wildchar expansion in the command-line, as specified with 'wildmode'
-set wildignore+=*.o "a list of file patterns; a file that matches with one of these patterns is ignored when expanding wildcards, completing file or directory names, and influences the result of expand(), glob() and globpath()
 set wildmenu "command-line completion operates in an enhanced mode
-set suffixes+=.d,.elf,.hex,.bin
+set wildchar=<Tab> "character you have to type to start wildchar expansion in the command-line, as specified with 'wildmode'
+set wildignore+=*.o,*.obj "a list of file patterns; a file that matches with one of these patterns is ignored when expanding wildcards, completing file or directory names, and influences the result of expand(), glob() and globpath()
+set suffixes+=.d,.elf,.hex,.bin "files with these suffixes get a lower priority whn multiple files match a wildcard
 set history=100 "how many entries of ":" commands, previous search patterns may be stored in histories
 set viminfo=!,<100,%,'100,/100,:100,f1,h,s10 "viminfo file is read upon startup and written when exiting Vim (specified parameters)
 set sessionoptions=blank,buffers,curdir,folds,globals,help,options,tabpages,winsize "change the effect of the :mksession command
 set restorescreen "the screen contents is restored when exiting Vim
+set cryptmethod=blowfish2 "method used for encryption when the buffer is written to a file
+
+set mouse& "enable the use of the mouse
 
 set writebackup "make a backup before overwriting a file; the backup is removed after the file was succesfully written
 set nobackup "do not make a backup before overwriting a file and leave it around after the file has been successfully written
+set backupdir& "list of directories for the backup file
 set swapfile "use a swapfile for the buffer
+set directory& "list of directory names for the swap file
 set updatetime=10000 "if this many milliseconds nothing is typed the swap file will be written to disk
 set updatecount=200 "after typing this many characters the swap file will be written to disk
 set undofile "undo history is saved to an undo file when writing a buffer to a file and restored on buffer read
@@ -21,7 +26,7 @@ set undolevels=1000 "maximum number of changes that can be undone
 
 set incsearch "while typing a search command, show where the pattern, as it as typed so far, matches
 set hlsearch "when there is a previous search pattern, highlight all its matches
-set nowrapscan "searches do not wrap around the end of the file
+set wrapscan "searches wrap around the end of the file
 set ignorecase "ignore case in search patterns
 set smartcase "override the 'ignorecase' option if the search pattern contains upper case characters
 set tagcase=followscs "follow the 'smartcase' and 'ignorecase' options when searching the tags file
@@ -47,9 +52,10 @@ set nojoinspaces "do not insert two spaces after a '.', '?' and '!' with a join 
 set whichwrap=b,s "allow specified keys that move the cursor left/right to move to the previous/next line when the cursor is on the first/last character in the line
 set matchpairs+=<:> "characters that form pairs; the % command jumps from one to the other
 set startofline "various commands (CTRL-D, G, H, gg, ...) move the cursor to the first non-blank of the line
+set notildeop "the tilde command ~ does not behave like an operator
 
 set title "the title of the window will be set
-set statusline=%3n\ %{mode()}\ %f\ [%{&fileencoding},%{&fileformat}]\ %y%q\ %([%M%R%H%W]%)%20(%l/%L,%c%V%)%=%p%%\  "content of the status line
+set statusline=%3n\ %{mode()}\ %f\ [%{&fileencoding},%{&fileformat}]\ %y%q\ %([%M%R%H%W]%)%=%-20(%4l/%L,%4c%V%)%p%%\  "content of the status line
 set report=0 "threshold for reporting number of lines changed
 set showmode "if in Insert, Replace or Visual mode put a message on the last line
 set more "listings pause when the whole screen is filled
@@ -72,6 +78,10 @@ set cursorline "highlight the text line of the cursor with CursorLine
 set noequalalways "splitting a window will reduce the size of the current window and leave the other windows the same
 set background=dark "use colors that look good on a dark backgound
 
+set isfname& "the characters specified by this option are included in file names and path names; filenames ar used for commands like "gf", "[i" and in the tags file
+set iskeyword& "keywords are used in searching and recognizing with many commands: "w", "*", "[i", etc.
+
+set scroll& "number of lines to scroll with Ctrl-U and Ctrl-D commands
 set scrolljump=1 "minimal number of lines to scroll when the cursor gets off the screen
 set scrolloff=2 "minimal number of screen lines to keep above and below the cursor
 set sidescroll=1 "the minimal number of columns to scroll horizontally
@@ -97,7 +107,7 @@ filetype indent on "enable loading the indent file for specifi file types
 syntax enable "switch on syntax highlighting (will keep your current color settings)
 
 highlight CursorLine cterm=bold ctermbg=darkblue
-highlight StatusLine cterm=bold ctermfg=red
+highlight StatusLine cterm=bold ctermbg=red ctermfg=16
 highlight User1 ctermbg=red ctermfg=black
 highlight User2 ctermbg=darkblue ctermfg=white
 
@@ -112,8 +122,8 @@ nmap <F4> :tn<CR>
 nmap <F5> :cp<CR>
 nmap <F6> :cn<CR>
 nmap <F12> :vnew<CR>
+nmap <C-F> :shell<CR>
 nnoremap <C-L> :nohlsearch<CR><C-L>
-noremap <C-K> :pyf /usr/share/clang/clang-format.py<CR>
 
 if filereadable("cscope.out")
     set cscopeprg=/usr/bin/cscope "specify the command to execute cscope
