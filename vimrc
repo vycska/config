@@ -1,4 +1,5 @@
 set nocompatible "do not make Vim to be more Vi-compatible, make Vim to behave in a more useful way
+set cpoptions& "flags that indicates Vi-compatible behavior
 
 set path=.,,**,/usr/arm-none-eabi/include,/usr/lib/gcc/arm-none-eabi/9.2.0/include "this is a list of directories which will be searched when using various commands
 set wildmode=list:full "completion mode that is used for the character specified with 'wildchar'
@@ -17,6 +18,8 @@ set mouse& "enable the use of the mouse
 set writebackup "make a backup before overwriting a file; the backup is removed after the file was succesfully written
 set nobackup "do not make a backup before overwriting a file and leave it around after the file has been successfully written
 set backupdir& "list of directories for the backup file
+set backupext& "string which is appended to a file name to make the name of the backup file
+set patchmode& "when non-empty the oldest version of a file is kept
 set swapfile "use a swapfile for the buffer
 set directory& "list of directory names for the swap file
 set updatetime=10000 "if this many milliseconds nothing is typed the swap file will be written to disk
@@ -33,8 +36,11 @@ set tagcase=followscs "follow the 'smartcase' and 'ignorecase' options when sear
 set magic "changes the special characters that can be used in search patterns
 set nogdefault "the :substitute flag 'g' is default off
 
-set complete=.,i,t "specify how keyword completion ins-completion works when CTRL-P or CTRL_N are used -- it indicates the type of completion and the places to scan
+set complete=.,t "specify how keyword completion ins-completion works when CTRL-P or CTRL_N are used -- it indicates the type of completion and the places to scan
+set completeopt=menuone,popup "options for Insert mode completion
+set showfulltag "when completing a word in inset mode from the tag file, show both the tag name and a tidied-up form of the search pattern as possible matches
 set noinfercase "when doing keyword completion in insert mode ins-completion, and 'ignorecase' is also on, the case of the match is adjusted depending on the typed text -- turn this off
+set dictionary& "list of file names that are used to lookup words for keyword completion commands i_Ctrl-X_Ctrl-K
 
 set tabstop=4 "number of spaces that a <Tab> in the file counts for
 set softtabstop=0 "number of spaces that a <Tab> counts for while performing editing operations
@@ -51,19 +57,28 @@ set backspace=eol,indent,start "influenes the working of <BS>, <Del>, Ctrl-W and
 set nojoinspaces "do not insert two spaces after a '.', '?' and '!' with a join command (only one space is inserted)
 set whichwrap=b,s "allow specified keys that move the cursor left/right to move to the previous/next line when the cursor is on the first/last character in the line
 set matchpairs+=<:> "characters that form pairs; the % command jumps from one to the other
+set noshowmatch "do not jump to the matching bracket when it is inserted
 set startofline "various commands (CTRL-D, G, H, gg, ...) move the cursor to the first non-blank of the line
 set notildeop "the tilde command ~ does not behave like an operator
+set nodigraph "do not enable the entering of digraphs in Insert mode with {char1} <BS> {char2}
+set esckeys "function keys that start with an <Esc> are recognized in Insert mode
+set pastetoggle=<F11> "specifies the key sequence that toggles the 'paste' option
 
 set title "the title of the window will be set
-set statusline=%3n\ %{mode()}\ %f\ [%{&fileencoding},%{&fileformat}]\ %y%q\ %([%M%R%H%W]%)%=%-20(%4l/%L,%4c%V%)%p%%\  "content of the status line
+set statusline=%3n\ %{mode()}\ %f\ (%{strftime(\"%Y-%m-%d\ %H:%M:%S\",getftime(expand(\"%\")))})\ [%{&fileencoding},%{&fileformat}]\ %y%q\ %([%M%R%H%W]%)%=%-20(%4l/%L,%4c%V%)%p%%\  "content of the status line
+set previewpopup=height:16 "a popup window is used for commands that would open a preview window
 set report=0 "threshold for reporting number of lines changed
+set modeline "check the number of lines in 'modelines' for set commands
+set modelines=5 "number of lines that is checked for set commands
 set showmode "if in Insert, Replace or Visual mode put a message on the last line
 set more "listings pause when the whole screen is filled
 set nrformats=alpha,bin,hex "this defines what bases Vim will consider for numbers when using the CTRL-A and CTRL-X commands for adding to and subtracting from a number respectively
 set noerrorbells "do not ring the bell (beep or screen flash) for error messages
 set noruler "do not show the line and column number of the cursor position, and relative position of the displayed text in the file
 set cmdheight=1 "number of screen lines to use for the command-line
+set helpheight& "minimal initial height of the help window
 set laststatus=2 "when the last window will have a status line -- always
+set switchbuf=useopen "this option controls the behavior when switching between buffers
 set display=truncate "change the way text is displayed -- 'truncate' causes as much as possible of the last line in a window to be displayed and "@@@" to be put in the first column of the last screen line
 set shortmess+=I "this option helps to avoid all the hit-enter prompts caused by file messages and to avoid some other messages
 set nowarn "do not give a warning message when a shell command is used while the buffer has been changed
@@ -97,7 +112,7 @@ set fileformats=unix,dos "give the <EOL> formats that will be tried when startin
 set fixendofline "when writing a file, <EOL> at the end of file will be restored if missing
 
 set tags& "filenames for the tag command
-set tagstack "tagstack is used normally
+set tagstack "tagstack is used normally with a tag stack
 set tagbsearch "binary searching is first used in the tags file
 
 filetype on "enable file type detection
@@ -112,6 +127,8 @@ highlight User1 ctermbg=red ctermfg=black
 highlight User2 ctermbg=darkblue ctermfg=white
 
 autocmd FileType vim :set nowrap
+autocmd FileType c :let c_no_curly_error=1
+autocmd FileType c :let c_gnu=1
 autocmd FileType c :unlet! c_comment_strings
 
 inoreabbrev \i \begin{itemize}<CR>\itemsep 0pt<CR>\item<CR>\end{itemize}<Up>
@@ -123,7 +140,18 @@ nmap <F5> :cp<CR>
 nmap <F6> :cn<CR>
 nmap <F12> :vnew<CR>
 nmap <C-F> :shell<CR>
+nmap <Space> :call Preview_toggle()<CR>
 nnoremap <C-L> :nohlsearch<CR><C-L>
+
+function Preview_toggle()
+    let pid = popup_findpreview()
+    let w = expand("<cword>")
+    if pid != 0
+        execute "pclose"
+    elseif w =~ '\a'
+        silent! execute "ptag " . w
+    endif
+endfunction
 
 if filereadable("cscope.out")
     set cscopeprg=/usr/bin/cscope "specify the command to execute cscope
