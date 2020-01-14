@@ -50,7 +50,7 @@ set shiftround "round indent to multiple of 'shiftwidth'
 
 set wrap "lines longer than the width of the window will wrap and displaying continues on the next line
 set linebreak "wrap long lines at a characters in 'breakat' rather than at the last character that fits on the screen
-set breakat& "this option lets you choose which characters might cause a line break if 'linebreak' is on
+set breakat+=_ "this option lets you choose which characters might cause a line break if 'linebreak' is on
 set textwidth=0 "maximum width of text that is being inserted -- a longer line will be broken after white space to get this width -- a zero value disable this
 set formatoptions-=ro "how automatic formatting is done -- do not automaitcally insert comment leader after hitting <Enter>, 'o', 'O'
 set backspace=eol,indent,start "influenes the working of <BS>, <Del>, Ctrl-W and Ctrl-U in Insert mode -- allow backspacing over line breaks, autoindent, start of insert
@@ -65,7 +65,7 @@ set esckeys "function keys that start with an <Esc> are recognized in Insert mod
 set pastetoggle=<F11> "specifies the key sequence that toggles the 'paste' option
 
 set title "the title of the window will be set
-set statusline=%3n\ %{mode()}\ %f\ (%{strftime(\"%Y-%m-%d\ %H:%M:%S\",getftime(expand(\"%\")))})\ [%{&fileencoding},%{&fileformat}]\ %y%q\ %([%M%R%H%W]%)%=%-20(%4l/%L,%4c%V%)%p%%\  "content of the status line
+set statusline=%3n\ %{mode()}\ %f\ (%{strftime(\"%Y-%m-%d\ %H:%M\",getftime(expand(\"%\")))})\ [%{&fileencoding},%{&fileformat}]\ %y%q\ %([%M%R%H%W]%)%=%-20(%4l/%L,%4c%V%)%p%%\  "content of the status line
 set previewpopup=height:16 "a popup window is used for commands that would open a preview window
 set report=0 "threshold for reporting number of lines changed
 set modeline "check the number of lines in 'modelines' for set commands
@@ -89,7 +89,7 @@ set number "print the line number in front of each line
 set numberwidth=4 "minimal number of columns to use for the line number
 set splitbelow "splitting a window will put the new window below the current one
 set splitright "splitting a window will put the new window right of the current one
-set cursorline "highlight the text line of the cursor with CursorLine
+"set cursorline "highlight the text line of the cursor with CursorLine
 set noequalalways "splitting a window will reduce the size of the current window and leave the other windows the same
 set background=dark "use colors that look good on a dark backgound
 
@@ -121,15 +121,25 @@ filetype indent on "enable loading the indent file for specifi file types
 
 syntax enable "switch on syntax highlighting (will keep your current color settings)
 
-highlight CursorLine cterm=bold ctermbg=darkblue
-highlight StatusLine cterm=bold ctermbg=red ctermfg=16
-highlight User1 ctermbg=red ctermfg=black
-highlight User2 ctermbg=darkblue ctermfg=white
+highlight CursorLine cterm=bold ctermbg=red
+highlight StatusLine cterm=bold ctermbg=red ctermfg=white
+highlight User1 ctermbg=white ctermfg=black
+highlight User2 ctermbg=white ctermfg=red
+highlight User3 ctermbg=green ctermfg=white
+highlight User4 ctermbg=red ctermfg=white
+
+let mapleader="\\"
 
 autocmd FileType vim :set nowrap
 autocmd FileType c :let c_no_curly_error=1
 autocmd FileType c :let c_gnu=1
 autocmd FileType c :unlet! c_comment_strings
+
+augroup CursorLine
+  autocmd!
+  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+  autocmd WinLeave * setlocal nocursorline
+augroup end
 
 inoreabbrev \i \begin{itemize}<CR>\itemsep 0pt<CR>\item<CR>\end{itemize}<Up>
 
@@ -141,7 +151,26 @@ nmap <F6> :cn<CR>
 nmap <F12> :vnew<CR>
 nmap <C-F> :shell<CR>
 nmap <Space> :call Preview_toggle()<CR>
-nnoremap <C-L> :nohlsearch<CR><C-L>
+nmap <C-K> :pyf /usr/share/clang/clang-format.py<CR>
+nnoremap <C-L> :nohlsearch <bar> call clearmatches()<CR><C-L>
+nmap <Leader>l :call matchadd('User2', '\%'.line('.').'l')<CR>
+
+set <M-1>=1
+set <M-2>=2
+set <M-3>=3
+set <M-4>=4
+nnoremap <M-1> :syntax keyword User1 <C-R>=expand("<cword>")<CR><CR>
+nnoremap <M-2> :syntax keyword User2 <C-R>=expand("<cword>")<CR><CR>
+nnoremap <M-3> :syntax keyword User3 <C-R>=expand("<cword>")<CR><CR>
+nnoremap <M-4> :syntax keyword User4 <C-R>=expand("<cword>")<CR><CR>
+nmap ☺ <M-1>
+nmap ☻ <M-2>
+nmap ♥ <M-3>
+nmap ♦ <M-4>
+nmap [1;3F☺ <M-1>
+nmap [1;3B☻ <M-2>
+nmap [6;3~♥ <M-3>
+nmap [1;3D♦ <M-4>
 
 function Preview_toggle()
     let pid = popup_findpreview()
