@@ -3,8 +3,10 @@ $include /etc/inputrc
 "\e[A": history-search-backward
 "\e[B": history-search-forward
 
-set show-all-if-ambiguous on
+set show-all-if-ambiguous off
 
 set completion-ignore-case on
 
 set colored-stats on
+
+#set show-mode-in-prompt on

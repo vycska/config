@@ -1,119 +1,191 @@
+" used real-time
+" set list :show <Tab> as ^I and end-of-line as $
+" set paste "paste mode, insert typed text literally
+" set cursorline "highlight the screen line of the cursor
+" set cursorcolumn "highlight the screen column of the cursor
+" set colorcolumn "columns to highlight
+" set scrollbind "this window scrolls together with other bound windows
+
+" general and important
 set nocompatible "do not make Vim to be more Vi-compatible, make Vim to behave in a more useful way
 set cpoptions& "flags that indicates Vi-compatible behavior
 
-set path=.,,**,/usr/arm-none-eabi/include,/usr/lib/gcc/arm-none-eabi/9.2.0/include "this is a list of directories which will be searched when using various commands
-set wildmode=list:full "completion mode that is used for the character specified with 'wildchar'
-set wildmenu "command-line completion operates in an enhanced mode
-set wildchar=<Tab> "character you have to type to start wildchar expansion in the command-line, as specified with 'wildmode'
-set wildignore+=*.o,*.obj "a list of file patterns; a file that matches with one of these patterns is ignored when expanding wildcards, completing file or directory names, and influences the result of expand(), glob() and globpath()
-set suffixes+=.d,.elf,.hex,.bin "files with these suffixes get a lower priority whn multiple files match a wildcard
-set history=100 "how many entries of ":" commands, previous search patterns may be stored in histories
-set viminfo=!,<100,%,'100,/100,:100,f1,h,s10 "viminfo file is read upon startup and written when exiting Vim (specified parameters)
-set sessionoptions=blank,buffers,curdir,folds,globals,help,options,tabpages,winsize "change the effect of the :mksession command
+" general vim
+set history=100 "how many command lines are remembered
+set viminfo=!,<100,'100,/100,:100,f1,h,s10 "list that specifies what to write in the viminfo file
+set sessionoptions=blank,buffers,curdir,folds,globals,help,options,tabpages,winsize "list of words that specifies what to put in a session file
 set restorescreen "the screen contents is restored when exiting Vim
-set cryptmethod=blowfish2 "method used for encryption when the buffer is written to a file
+set cryptmethod=blowfish2 "encryption method for file writing
 
-set mouse& "enable the use of the mouse
+" files and directories
+set fileformats=unix,dos "list of file formats to look for when editing a file
+set fixendofline "fixes missing end-of-line at end of text file
+set path=.,,**,/usr/arm-none-eabi/include,/usr/lib/gcc/arm-none-eabi/9.2.0/include "list of directories names used for file searching
+set noautochdir "do not change to directory of file in buffer
+set fileignorecase "ignore case when using file names
+set modeline "enable using settings from modelines when reading a file
+set modelines=5 "number of lines to check for modelines
 
-set writebackup "make a backup before overwriting a file; the backup is removed after the file was succesfully written
-set nobackup "do not make a backup before overwriting a file and leave it around after the file has been successfully written
-set backupdir& "list of directories for the backup file
-set backupext& "string which is appended to a file name to make the name of the backup file
-set patchmode& "when non-empty the oldest version of a file is kept
-set swapfile "use a swapfile for the buffer
-set directory& "list of directory names for the swap file
-set updatetime=10000 "if this many milliseconds nothing is typed the swap file will be written to disk
-set updatecount=200 "after typing this many characters the swap file will be written to disk
-set undofile "undo history is saved to an undo file when writing a buffer to a file and restored on buffer read
+" messages
+set report=0 "threshold for reporting number of changed lines
+set noerrorbells "do not ring the bell for error messages
+set more "pause listings when the screen is full
+set shortmess+=I "list of flags to make messages shorter
+set nowarn "do not warn when using a shell command and a buffer has changes
+
+" backups
+set writebackup "write a backup file before overwriting a file
+set nobackup "do not keep a backup file after overwriting a file
+set backupdir& "list of directories to put backup files in
+set backupext& "file name extension for the backup file
+set patchmode& "keep oldest version of a file [specifies file name extension]
+
+" swap file
+set swapfile "use a swap file for this buffer
+set directory& "list of directories for the swap file
+set updatetime=10000 "time in msec after which the swap fie will be updated
+set updatecount=200 "number of characters typed to cause a swap file update
+
+" languages
+set isfname& "specifies the characters in a file name
+set isident& "specifies the characters in an identifier
+set iskeyword& "specifies the characters in a keyword
+set isprint& "specifies printable characters
+
+" command line completion
+set wildchar=<Tab> "key that triggers command-line expansion
+set wildmenu "command-line completion shows a list of matches
+set wildmode=list:full "specifies how command line completion works
+set wildignore+=*.o,*.obj "list of patterns to ignore files for file name completion
+set suffixes+=.d,.elf,.hex,.bin "list of file name extensions that have a lower priority
+set wildignorecase "ignore case when completing file names
+
+" terminal
+set title "show info in the window title
+set ttyfast "terminal connection is fast
+set esckeys "recognize keys that start with <Esc> in Insert mode
+
+" highlighting
+set background=dark "the background color brightness
+
+" mouse
+set mouse& "list of flags for using the mouse
+set mousemodel=extend "what the right mouse button is used for
+
+" mapping
+set pastetoggle=<F11> "key sequence to toggle paste mode
+set timeout "allow timing out halfway into a mapping
+set ttimeout "allow timing out halfwat into a key code
+set timeoutlen=2000 "time in msec for 'timeout'
+set ttimeoutlen=100 "time in msec for 'ttimeout'
+
+" windows
+set splitbelow "a new window is put below the current one
+set splitright "a new window is put right of the current one
+set noequalalways "do not make all windows the same size when adding/removing windows
+set helpheight& "initial height of the help window
+set previewpopup=height:6 "use a popup window for preview
+set switchbuf=useopen "which window to use when jumping
+
+" scrolling
+set window& "number of lines to scroll for CTRL-F and CTRL-B
+set scroll& "number of lines to scroll for CTRL-U and CTRL-D
+set scrolloff=2 "number of screen lines to show around the cursor
+set scrolljump=1 "minimal number of lines to scroll at a time
+set sidescroll=1 "minimal number of columns to scroll horizontally
+set sidescrolloff=2 "minimal number of columns to keep left and right of the cursor
+set scrollopt=ver,hor,jump "list of options for 'scrollbind'
+
+" view
+set number "show the line number for each line
+set numberwidth=4 "number of columnds to use for the line number
+set showmode "display the current mode in the status line
+set noruler "do not show cursor position below each window
+set statusline=%3n\ %f\ %<(%{strftime(\"%Y-%m-%d\ %H:%M\",getftime(expand(\"%\")))})\ [%{&fileencoding},%{&fileformat}]\ %y%q\ %5*%([%M%R%H%W]%)%0*%=%-20(%4l/%L,%4c%V%)%{mode()}\  "alternate format to be used for a status line
+set laststatus=2 "when to use a status line for the last window
+set showcmd "show (partial) command keys in the status line
+set cmdheight=1 "number of lines used for the command-line
+
+" displaying text
+set wrap "long lines wrap
+set linebreak "wrap long lines at a character in 'breakat'
+set breakat+=_ "which characters might cause a line break
+set showbreak=>\  "string to put before wrapped screen lines
+set display=truncate "include "lastline" to show the last line even if it doesn't fit
+set listchars=eol:$,space:.,trail:-,extends:>,precedes:<,nbsp:_ "list of strings used for list mode
+
+" tabs and indenting
+set tabstop=4 "number of spaces a <Tab> in the text stands for
+set softtabstop=0 "if non-zero, number of spaces to insert for a <Tab>
+set shiftwidth=4 "number of spaces used for each step of (auto)indent
+set expandtab "expand <Tab> to spaces in Insert mode
+set shiftround "round to 'shiftwidth' for "<<" and ">>"
+
+" searching
+set incsearch "show match for partly typed seach command
+set hlsearch "highlight all matches for the last used search pattern
+set wrapscan "search commands wrap around the end of the buffer
+set ignorecase "ignore case when using a search pattern
+set smartcase "override 'ignorecase' when pattern has upper case characters
+set magic "change the way backslashes are used in search patterns
+set nogdefault "do not use the 'g' flag for ":substitute"
+
+" moving around
+set whichwrap=b,s "list of flags specifying which commands wrap to another line
+set startofline "many jump commands move the cursor to the first non-blank character of a line
+set matchpairs+=<:> "list of pairs that match for the "%" command
+
+" undo [editing]
+set undofile "automatically save and restore undo history
 set undolevels=1000 "maximum number of changes that can be undone
+set undodir& "list of directories for undo files
 
-set incsearch "while typing a search command, show where the pattern, as it as typed so far, matches
-set hlsearch "when there is a previous search pattern, highlight all its matches
-set wrapscan "searches wrap around the end of the file
-set ignorecase "ignore case in search patterns
-set smartcase "override the 'ignorecase' option if the search pattern contains upper case characters
-set tagcase=followscs "follow the 'smartcase' and 'ignorecase' options when searching the tags file
-set magic "changes the special characters that can be used in search patterns
-set nogdefault "the :substitute flag 'g' is default off
+" completion [editing]
+set complete=.,t "specifies how Insert mode completion works for CTRL-N and CTRL-P
+set completeopt=menuone,popup "whether to use a popup menu for Insert mode completion
+set completepopup& "options for the Insert mode completion info popup
+set noinfercase "do not adjust case of a keyword completion match
+set dictionary& "list of dictionary files for keyword completion
+set thesaurus& "list of thesaurus files for keyword completion
+set noshowfulltag "when completing tags in Insert mode do not show more info
 
-set complete=.,t "specify how keyword completion ins-completion works when CTRL-P or CTRL_N are used -- it indicates the type of completion and the places to scan
-set completeopt=menuone,popup "options for Insert mode completion
-set showfulltag "when completing a word in inset mode from the tag file, show both the tag name and a tidied-up form of the search pattern as possible matches
-set noinfercase "when doing keyword completion in insert mode ins-completion, and 'ignorecase' is also on, the case of the match is adjusted depending on the typed text -- turn this off
-set dictionary& "list of file names that are used to lookup words for keyword completion commands i_Ctrl-X_Ctrl-K
+" editing text
+set backspace=eol,indent,start "specifies what <BS>, CTRL-W, etc. can do in Insert mode
+set textwidth=0 "line length above which to break a line
+set formatoptions-=ro "list of flags that tell how automatic formatting works
+set nojoinspaces "do not use two spaces after '.' when joining a line
+set nrformats=alpha,bin,hex "number formats recognized for CTRL-A and CTRl-X commands
+set noshowmatch "when inserting a bracket, do not briefly jump to its match
+set notildeop "the "~" command does not behave like an operator
+set nodigraph "do not enable entering digraphs with c1 <BS> c2
 
-set tabstop=4 "number of spaces that a <Tab> in the file counts for
-set softtabstop=0 "number of spaces that a <Tab> counts for while performing editing operations
-set shiftwidth=4 "number of spaces to use for each step of (auto)indent
-set expandtab "use the appropriate number of spaces to insert a <Tab>
-set shiftround "round indent to multiple of 'shiftwidth'
+" tags
+set tags& "list of file names to search for tags
+set tagstack "a :tag command will use the tagstach
+set tagbsearch "use binary searching in tags files
+set tagcase=followscs "how to handle case when searching in tags files
 
-set wrap "lines longer than the width of the window will wrap and displaying continues on the next line
-set linebreak "wrap long lines at a characters in 'breakat' rather than at the last character that fits on the screen
-set breakat+=_ "this option lets you choose which characters might cause a line break if 'linebreak' is on
-set textwidth=0 "maximum width of text that is being inserted -- a longer line will be broken after white space to get this width -- a zero value disable this
-set formatoptions-=ro "how automatic formatting is done -- do not automaitcally insert comment leader after hitting <Enter>, 'o', 'O'
-set backspace=eol,indent,start "influenes the working of <BS>, <Del>, Ctrl-W and Ctrl-U in Insert mode -- allow backspacing over line breaks, autoindent, start of insert
-set nojoinspaces "do not insert two spaces after a '.', '?' and '!' with a join command (only one space is inserted)
-set whichwrap=b,s "allow specified keys that move the cursor left/right to move to the previous/next line when the cursor is on the first/last character in the line
-set matchpairs+=<:> "characters that form pairs; the % command jumps from one to the other
-set noshowmatch "do not jump to the matching bracket when it is inserted
-set startofline "various commands (CTRL-D, G, H, gg, ...) move the cursor to the first non-blank of the line
-set notildeop "the tilde command ~ does not behave like an operator
-set nodigraph "do not enable the entering of digraphs in Insert mode with {char1} <BS> {char2}
-set esckeys "function keys that start with an <Esc> are recognized in Insert mode
-set pastetoggle=<F11> "specifies the key sequence that toggles the 'paste' option
-
-set title "the title of the window will be set
-set statusline=%3n\ %{mode()}\ %f\ (%{strftime(\"%Y-%m-%d\ %H:%M\",getftime(expand(\"%\")))})\ [%{&fileencoding},%{&fileformat}]\ %y%q\ %([%M%R%H%W]%)%=%-20(%4l/%L,%4c%V%)%p%%\  "content of the status line
-set previewpopup=height:16 "a popup window is used for commands that would open a preview window
-set report=0 "threshold for reporting number of lines changed
-set modeline "check the number of lines in 'modelines' for set commands
-set modelines=5 "number of lines that is checked for set commands
-set showmode "if in Insert, Replace or Visual mode put a message on the last line
-set more "listings pause when the whole screen is filled
-set nrformats=alpha,bin,hex "this defines what bases Vim will consider for numbers when using the CTRL-A and CTRL-X commands for adding to and subtracting from a number respectively
-set noerrorbells "do not ring the bell (beep or screen flash) for error messages
-set noruler "do not show the line and column number of the cursor position, and relative position of the displayed text in the file
-set cmdheight=1 "number of screen lines to use for the command-line
-set helpheight& "minimal initial height of the help window
-set laststatus=2 "when the last window will have a status line -- always
-set switchbuf=useopen "this option controls the behavior when switching between buffers
-set display=truncate "change the way text is displayed -- 'truncate' causes as much as possible of the last line in a window to be displayed and "@@@" to be put in the first column of the last screen line
-set shortmess+=I "this option helps to avoid all the hit-enter prompts caused by file messages and to avoid some other messages
-set nowarn "do not give a warning message when a shell command is used while the buffer has been changed
-set listchars=eol:$,space:.,trail:-,extends:>,precedes:<,nbsp:_ "strings to use in 'list' mode and for the :list command
-set showbreak=>\  "string to put at the start of lines that have been wrapped
-set showcmd "show (partial) command in the last line of the screen
-set number "print the line number in front of each line
-set numberwidth=4 "minimal number of columns to use for the line number
-set splitbelow "splitting a window will put the new window below the current one
-set splitright "splitting a window will put the new window right of the current one
-"set cursorline "highlight the text line of the cursor with CursorLine
-set noequalalways "splitting a window will reduce the size of the current window and leave the other windows the same
-set background=dark "use colors that look good on a dark backgound
-
-set isfname& "the characters specified by this option are included in file names and path names; filenames ar used for commands like "gf", "[i" and in the tags file
-set iskeyword& "keywords are used in searching and recognizing with many commands: "w", "*", "[i", etc.
-
-set scroll& "number of lines to scroll with Ctrl-U and Ctrl-D commands
-set scrolljump=1 "minimal number of lines to scroll when the cursor gets off the screen
-set scrolloff=2 "minimal number of screen lines to keep above and below the cursor
-set sidescroll=1 "the minimal number of columns to scroll horizontally
-set sidescrolloff=2 "the minimal number of screen columns to keep to the left and to the right of the cursor if 'nowrap' is set
-set scrollopt=ver,hor,jump "specify how 'scrollbind' windows should behave
-
-set timeout "determine the behavior when part of a mapped key sequence or keyboard code has been received
-set ttimeout "time out on -- mappings and key codes
-set timeoutlen=2000 "timeout on mapping after two seconds
-set ttimeoutlen=100 "timeout on key codes after a tenth of a second
-
-set fileformats=unix,dos "give the <EOL> formats that will be tried when starting to edit a new buffer and when reading a file into an existing buffer
-set fixendofline "when writing a file, <EOL> at the end of file will be restored if missing
-
-set tags& "filenames for the tag command
-set tagstack "tagstack is used normally with a tag stack
-set tagbsearch "binary searching is first used in the tags file
+if filereadable("cscope.out")
+    set cscopeprg=/usr/bin/cscope "command for executing cscope
+    set nocscopeverbose "do not give messages when adding a cscope database
+    cscope add cscope.out
+    set cscopeverbose "give messages when adding a cscope database
+    set nocscoperelative "file ames in a cscope file are not relative to that file
+    set nocscopetag "do not use cscope for tag commands
+    set cscopetagorder=0 "the order in which ":cstag" performs a search
+    set cscopepathcomp=5 "how many components of the path to show
+    set cscopequickfix=s0,g0,d0,c0,t0,e0,f0,i0,a0 "when to use a quickfix window for cscope
+    " 's' symbol, g' global, 'd' called, 'c' calls, 't' text, 'e' egrep, 'f' file, 'i' includes, 'a' assignments
+    nmap <C-\>s :cscope find s <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-\>g :cscope find g <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-\>d :cscope find d <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-\>c :cscope find c <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-\>t :cscope find t <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-\>e :cscope find e <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-\>f :cscope find f <C-R>=expand("<cfile>")<CR><CR>
+    nmap <C-\>i :cscope find i <C-R>=expand("<cfile>")<CR><CR>
+    nmap <C-\>a :cscope find a <C-R>=expand("<cword>")<CR><CR>
+endif
 
 filetype on "enable file type detection
 filetype plugin on "enable loading the plugin files for specific file types
@@ -121,12 +193,14 @@ filetype indent on "enable loading the indent file for specifi file types
 
 syntax enable "switch on syntax highlighting (will keep your current color settings)
 
-highlight CursorLine cterm=bold ctermbg=red
+highlight CursorLine cterm=bold ctermbg=darkblue
 highlight StatusLine cterm=bold ctermbg=red ctermfg=white
+highlight Pmenu cterm=bold ctermbg=black
 highlight User1 ctermbg=white ctermfg=black
 highlight User2 ctermbg=white ctermfg=red
 highlight User3 ctermbg=green ctermfg=white
 highlight User4 ctermbg=red ctermfg=white
+highlight User5 cterm=bold ctermbg=black ctermfg=yellow
 
 let mapleader="\\"
 
@@ -149,11 +223,12 @@ nmap <F4> :tn<CR>
 nmap <F5> :cp<CR>
 nmap <F6> :cn<CR>
 nmap <F12> :vnew<CR>
-nmap <C-F> :shell<CR>
 nmap <Space> :call Preview_toggle()<CR>
-nmap <C-K> :pyf /usr/share/clang/clang-format.py<CR>
-nnoremap <C-L> :nohlsearch <bar> call clearmatches()<CR><C-L>
 nmap <Leader>l :call matchadd('User2', '\%'.line('.').'l')<CR>
+nmap <Leader>d :!dasht <cword><CR>
+nmap <C-F> :shell<CR>
+nnoremap <C-]> g<C-]>
+nnoremap <C-L> :nohlsearch <bar> call clearmatches()<CR><C-L>
 
 set <M-1>=1
 set <M-2>=2
@@ -176,30 +251,8 @@ function Preview_toggle()
     let pid = popup_findpreview()
     let w = expand("<cword>")
     if pid != 0
-        execute "pclose"
+        execute "pclose!"
     elseif w =~ '\a'
         silent! execute "ptag " . w
     endif
 endfunction
-
-if filereadable("cscope.out")
-    set cscopeprg=/usr/bin/cscope "specify the command to execute cscope
-    set nocscopeverbose "messages will not be printed indicating success or failure when adding a cscope database
-    cscope add cscope.out
-    set cscopeverbose "messages will be printed indicating success or failure when adding a cscope database
-    set nocscoperelative "do not use the basename of cscope.out location as the prefix to construct an absolute path
-    set nocscopetag "do not use :cstag instead of the default :tag behaviour
-    set cscopetagorder=0 "determine the order in which :cstag performs a search -- cscope is searched first
-    set cscopepathcomp=5 "determine how many components of a file's path to display
-    set cscopequickfix=s0,g0,d0,c0,t0,e0,f0,i0,a0 "specify whether to use quickfix window to show cscope results
-    " 's' symbol, g' global, 'd' called, 'c' calls, 't' text, 'e' egrep, 'f' file, 'i' includes, 'a' assignments
-    nmap <C-\>s :cscope find s <C-R>=expand("<cword>")<CR><CR>
-    nmap <C-\>g :cscope find g <C-R>=expand("<cword>")<CR><CR>
-    nmap <C-\>d :cscope find d <C-R>=expand("<cword>")<CR><CR>
-    nmap <C-\>c :cscope find c <C-R>=expand("<cword>")<CR><CR>
-    nmap <C-\>t :cscope find t <C-R>=expand("<cword>")<CR><CR>
-    nmap <C-\>e :cscope find e <C-R>=expand("<cword>")<CR><CR>
-    nmap <C-\>f :cscope find f <C-R>=expand("<cfile>")<CR><CR>
-    nmap <C-\>i :cscope find i <C-R>=expand("<cfile>")<CR><CR>
-    nmap <C-\>a :cscope find a <C-R>=expand("<cword>")<CR><CR>
-endif
